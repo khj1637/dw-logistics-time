@@ -23,6 +23,12 @@ st.markdown(
     
     /* 하단 footer 숨김 (버튼 포함) */
     footer {visibility: hidden;}
+    
+    /* 특정 클래스명 요소 숨김 */
+    ._profileContainer_gzau3_53 {display: none !important;}
+
+    /* 특정 클래스명 요소 숨김 */
+    ._container_gzau3_1 _viewerBadge_nim44_23 {display: none !important;}
     </style>
     """,
     unsafe_allow_html=True
