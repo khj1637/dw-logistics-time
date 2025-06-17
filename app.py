@@ -21,8 +21,6 @@ fontprop = fm.FontProperties(fname=font_path)
 plt.rcParams['font.family'] = fontprop.get_name()
 plt.rcParams['axes.unicode_minus'] = False
 
-st.set_page_config(page_title="물류센터 공사기간 예측기", layout="wide")
-
 # 2. 데이터 불러오기
 @st.cache_data
 def load_data():
@@ -32,30 +30,30 @@ def load_data():
 
 df_data = load_data()
 
-# 3. 로고 출력 함수
-def get_base64_logo(img_path):
-    img = Image.open(img_path)
-    buffer = BytesIO()
-    img.save(buffer, format="PNG")
-    img_b64 = base64.b64encode(buffer.getvalue()).decode()
-    return f"<img src='data:image/png;base64,{img_b64}' width='180' style='display:block; margin: 0 auto 12px auto;'>"
-
-st.markdown(get_base64_logo("logo.png"), unsafe_allow_html=True)
-st.markdown("""
-    <div style="
-        text-align: center;
-        color: #003366;
-        font-size: 2.0rem;
-        font-weight: bold;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        padding: 0 10px;
-    ">
-        물류센터 공사기간 예측기
+st.markdown(
+    """
+    <div style="text-align: center; margin-bottom: 5px;">
+        <img src="https://raw.githubusercontent.com/khj1637/dw-workday-ai/main/img/logo.png"
+             alt="DongwonCI"
+             width="180"
+             style="display: block; margin: auto; padding-bottom: 5px;">
     </div>
-    <hr style='border: 0px solid #cccccc; margin-top: -8px;'>
-""", unsafe_allow_html=True)
+    """,
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    """
+    <h1 style='text-align: center;'>물류센터 공사기간 예측기</h1>
+    <div style='height: 20px;'></div>  <!-- 공백 한 줄 -->
+    <p style='text-align: left; font-size: 0.85rem; color: #555;'>
+        버전: v1.0.0<br>
+        최종 업데이트: 2025년 6월 17일<br>
+        개발자 : 동원건설산업 기술팀 김혁진
+    </p>
+    """,
+    unsafe_allow_html=True
+)
 
 # 4. 보조 함수들
 
