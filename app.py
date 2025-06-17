@@ -25,10 +25,10 @@ st.markdown(
     footer {visibility: hidden;}
     
     /* 특정 클래스명 요소 숨김 */
-    ._profileContainer_gzau3_53 {display: none !important;}
+    ._profileContainer_gzau3_53 {visibility: hidden;}
 
     /* 특정 클래스명 요소 숨김 */
-    ._container_gzau3_1 _viewerBadge_nim44_23 {display: none !important;}
+    ._container_gzau3_1 _viewerBadge_nim44_23 {visibility: hidden;}
     </style>
     """,
     unsafe_allow_html=True
