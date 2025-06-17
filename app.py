@@ -15,6 +15,20 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics.pairwise import euclidean_distances
 from sklearn.preprocessing import RobustScaler
 
+st.markdown(
+    """
+    <style>
+    /* 상단 'Made with Streamlit' 로고 숨김 */
+    header {visibility: hidden;}
+    
+    /* 하단 footer 숨김 (버튼 포함) */
+    footer {visibility: hidden;}
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+
 # 폰트 설정
 font_path = "./NanumGothic.ttf"  # 또는 "./fonts/NanumGothic.ttf"
 fontprop = fm.FontProperties(fname=font_path)
