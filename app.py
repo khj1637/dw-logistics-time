@@ -133,8 +133,17 @@ def find_similar_projects_with_categorical_filter(user_row, df, top_k=5):
         return np.sqrt(np.sum([(a[i] - b[i]) ** 2 * w_dict[cols[i]] for i in range(len(cols))]))
 
     distances = np.array([weighted_euclidean(row, user_scaled, weights, feature_cols) for row in df_scaled])
-    similarities = 1 / (distances + 1e-8)
-    df_matched["유사도점수"] = similarities * 100
+
+    # MinMax 정규화된 유사도 계산
+    max_dist = distances.max()
+    min_dist = distances.min()
+    if max_dist == min_dist:
+        # 모든 거리가 같으면 동일 유사도 부여
+        similarities = np.ones_like(distances)
+    else:
+        similarities = 1 - ((distances - min_dist) / (max_dist - min_dist))
+
+    df_matched["유사도점수"] = similarities * 100  # 0~100 점수화
 
     top_similar = df_matched.sort_values("유사도점수", ascending=False).head(top_k)
     if "전체공사기간" not in top_similar.columns or top_similar["전체공사기간"].isnull().all():
