@@ -15,26 +15,6 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics.pairwise import euclidean_distances
 from sklearn.preprocessing import RobustScaler
 
-st.markdown(
-    """
-    <style>
-    /* 상단 'Made with Streamlit' 로고 숨김 */
-    header {visibility: hidden;}
-    
-    /* 하단 footer 숨김 (버튼 포함) */
-    footer {visibility: hidden;}
-    
-    /* 특정 클래스명 요소 숨김 */
-    ._profileContainer_gzau3_53 {visibility: hidden;}
-
-    /* 특정 클래스명 요소 숨김 */
-    ._container_gzau3_1 _viewerBadge_nim44_23 {visibility: hidden;}
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
-
 # 폰트 설정
 font_path = "./NanumGothic.ttf"  # 또는 "./fonts/NanumGothic.ttf"
 fontprop = fm.FontProperties(fname=font_path)
@@ -49,18 +29,6 @@ def load_data():
     return df
 
 df_data = load_data()
-
-st.markdown(
-    """
-    <div style="text-align: center; margin-bottom: 5px;">
-        <img src="https://raw.githubusercontent.com/khj1637/dw-workday-ai/main/img/logo.png"
-             alt="DongwonCI"
-             width="180"
-             style="display: block; margin: auto; padding-bottom: 5px;">
-    </div>
-    """,
-    unsafe_allow_html=True
-)
 
 st.markdown(
     """
