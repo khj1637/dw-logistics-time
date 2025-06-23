@@ -15,6 +15,27 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics.pairwise import euclidean_distances
 from sklearn.preprocessing import RobustScaler
 
+st.markdown(
+    """
+    <style>
+    /* 상단 'Made with Streamlit' 로고 숨김 */
+    header {visibility: hidden;}
+    
+    /* 하단 footer 숨김 (버튼 포함) */
+    footer {visibility: hidden;}
+    
+    /* 특정 클래스명 요소 숨김 */
+    ._profileContainer_gzau3_53 {visibility: hidden;}
+
+    /* 특정 클래스명 요소 숨김 */
+    ._container_gzau3_1 _viewerBadge_nim44_23 {visibility: hidden;}
+
+    .st-emotion-cache-1w723zb {padding: 0 !important;}
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 # 폰트 설정
 font_path = "./NanumGothic.ttf"  # 또는 "./fonts/NanumGothic.ttf"
 fontprop = fm.FontProperties(fname=font_path)
@@ -29,19 +50,6 @@ def load_data():
     return df
 
 df_data = load_data()
-
-st.markdown(
-    """
-    <h1 style='text-align: center;'>물류센터 공사기간 예측기</h1>
-    <div style='height: 20px;'></div>  <!-- 공백 한 줄 -->
-    <p style='text-align: left; font-size: 0.85rem; color: #555;'>
-        버전: v1.0.0<br>
-        최종 업데이트: 2025년 6월 17일<br>
-        개발자 : 동원건설산업 기술팀 김혁진
-    </p>
-    """,
-    unsafe_allow_html=True
-)
 
 # 4. 보조 함수들
 
@@ -137,6 +145,15 @@ def parse_int(text):
         return np.nan
 
 # 7. 사용자 입력 UI
+
+st.markdown("""
+<h2 style='text-align: left;'>물류센터 공사기간 예측 AI</h2>
+<p style='text-align: left; font-size: 16px; color: #555555;'>
+이 AI 모델은 동원건설산업에서 축적한 물류센터 시공 데이터를 기반으로, 입력된 프로젝트 조건과 유사한 사례를 자동>
+예측 결과는 통계 기반 보정 과정을 거쳐 보다 현실적이고 신뢰도 높은 신규 물류센터 프로젝트의 예상 공사기간을 제[>
+</p>
+""", unsafe_allow_html=True)
+
 with st.expander("필수 입력값", expanded=True):
     
     # 👉 프로젝트명 입력 필드 추가
