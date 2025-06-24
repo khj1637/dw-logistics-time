@@ -459,9 +459,9 @@ if st.button("예측 시작", use_container_width=True):
  
     # 예측 결과 표
     final_table = pd.DataFrame({
-        "예측 방식": ["선형회귀", "랜덤포레스트", "유사 프로젝트 기반"],
-        "예측값 (개월)": [round(pred1, 1), round(pred2, 1), round(pred3, 1)],
-        "신뢰도 (%)": [trust1, trust2, trust3]  # 이미 계산됨
+        "예측 방식": ["선형회귀", "랜덤포레스트", "유사 프로젝트 기반", "앙상블 평균"],
+        "예측값 (개월)": [round(pred1, 1), round(pred2, 1), round(pred3, 1), round(pred_ensemble, 1)],
+        "신뢰도 (%)": [trust1, trust2, trust3, " - "]  # 앙상블은 개별 신뢰도에 기반하므로 표시 생략 또는 "-"
     })
 
     st.dataframe(final_table)
