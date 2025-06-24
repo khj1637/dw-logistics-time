@@ -414,10 +414,10 @@ if st.button("예측 시작", use_container_width=True):
         explain1 = generate_explanation("선형회귀", r2_1, std, sim_mean, sample_n, total_data, trust1)
 
         trust2 = get_realistic_trust_score(r2_2, std=sim_std, sim_mean=mean_similarity, sample_n=len(similar_df), total_data=total_data_count)
-        explain2 = generate_explanation(" 랜덤포레스트", r2_2, sim_std, mean_similarity, len(similar_df), total_data_count, trust2)
+        explain2 = generate_explanation("랜덤포레스트", r2_2, sim_std, mean_similarity, len(similar_df), total_data_count, trust2)
 
         trust3 = get_realistic_trust_score(1.0, std=sim_std, sim_mean=mean_similarity, sample_n=len(similar_df), total_data=total_data_count)
-        explain3 = generate_explanation(" 유사 프로젝트 기반", 1.0, sim_std, mean_similarity, len(similar_df), total_data_count, trust3)
+        explain3 = generate_explanation("유사 프로젝트 기반", 1.0, sim_std, mean_similarity, len(similar_df), total_data_count, trust3)
 
         # 가장 신뢰도 높은 모델 찾기
         model_names = ["선형회귀", "랜덤포레스트", "유사 프로젝트 기반"]
