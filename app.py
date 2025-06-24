@@ -58,11 +58,17 @@ def detect_outlier_floors(floor_count):
     if floor_count >= 50:
         st.warning("⚠️ 입력하신 층수가 비정상적으로 높습니다. 다시 확인해주세요.")
 
-def get_realistic_trust_score(r2, std=None, sim_mean=None, sample_n=None):
+def get_realistic_trust_score(r2, std=None, sim_mean=None, sample_n=None, total_data=None):
+    # 데이터 수에 따른 신뢰 가중치 (최대 1.0, 최소 0.5)
+    if total_data is not None and total_data < 300:
+        data_weight = 0.5 + 0.5 * (total_data / 300)
+    else:
+        data_weight = 1.0
+
     score = 0
 
     # 1. 모델 설명력 기반 (최대 50점)
-    score += r2 * 50  # R² = 1.0이면 50점
+    score += r2 * 50
 
     # 2. 유사도 평균 기반 평가 (최대 30점)
     if sim_mean is not None:
@@ -74,8 +80,6 @@ def get_realistic_trust_score(r2, std=None, sim_mean=None, sample_n=None):
             score += 20
         elif sim_mean >= 20:
             score += 10
-        else:
-            score += 0
 
     # 3. 표준편차 기반 안정성 평가 (최대 20점)
     if std is not None:
@@ -85,15 +89,16 @@ def get_realistic_trust_score(r2, std=None, sim_mean=None, sample_n=None):
             score += 15
         elif std <= 8:
             score += 10
-        else:
-            score += 0
 
     # 4. 유사 프로젝트 수 보정
     if sample_n is not None and sample_n < 3:
-        score -= 10  # 너무 적으면 신뢰도 감소
+        score -= 10
 
-    # 5. 점수 클램핑
-    score = max(10, min(95, score))  # 하한 10, 상한 95
+    # 데이터량 기반 신뢰도 보정
+    score *= data_weight
+
+    # 점수 제한
+    score = max(5, min(95, score))
     return int(round(score))
 
 @st.cache_data
@@ -342,11 +347,14 @@ if st.button("예측 시작", use_container_width=True):
     
     if project_name:
             # ⭐ 신뢰도 점수 계산 및 별점 변환
+        total_data_count = len(df_model)
+
         trust_score = get_realistic_trust_score(
             r2=(r2_1 + r2_2) / 2,
             std=sim_std,
             sim_mean=mean_similarity,
-            sample_n=len(similar_df)
+            sample_n=len(similar_df),
+            total_data=total_data_count  # ← 여기에 총 유효 데이터 수 전달
         )
         
         st.markdown(f"""
