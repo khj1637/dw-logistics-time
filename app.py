@@ -370,7 +370,7 @@ if st.button("예측 시작", use_container_width=True):
                     <strong style="color:#004080;">유사 프로젝트 기반</strong> 결과를 종합하여 계산되었습니다.
                 </div>
                 <div style="text-align: center; font-size: 0.9rem; color: #444; margin-top: 8px;">
-                    해당 예측 결과의 <strong style="color:#004080;">신뢰도</strong>는 <span style="font-weight: bold;">{trust_score_percent}%</span> 입니다.
+                    해당 예측 결과의 <strong style="color:#004080;">신뢰도</strong>는 <span style="font-weight: bold;">{trust_score}%</span> 입니다.
                 </div>
             </div>
         """, unsafe_allow_html=True)
