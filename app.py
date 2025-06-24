@@ -20,7 +20,7 @@ st.markdown(
     """
     <style>
     /* 상단 'Made with Streamlit' 로고 숨김 */
-   # header {visibility: hidden;}
+    header {visibility: hidden;}
     
     /* 하단 footer 숨김 (버튼 포함) */
     footer {visibility: hidden;}
