@@ -195,12 +195,15 @@ def generate_explanation(model_type, r2, std, trust_score):
         parts.append("- 유사 프로젝트 기반 모델은 입력 조건과 유사한 실제 사례의 공사기간 평균을 기반으로 예측합니다.")
 
     # 🔹 설명력
-    if r2 >= 0.7:
-        parts.append(f"- 모델의 설명력(R²)은 **{r2:.2f}**로 매우 높습니다.")
-    elif r2 >= 0.4:
-        parts.append(f"- 모델의 설명력(R²)은 **{r2:.2f}**로 보통 수준입니다.")
+    if r2 is None:
+        parts.append("- 이 모델은 회귀 기반이 아니므로 설명력(R²)을 계산하지 않습니다.")
     else:
-        parts.append(f"- 모델의 설명력(R²)은 **{r2:.2f}**로 낮아 변수들이 충분히 설명하지 못하고 있을 수 있습니다.")
+        if r2 >= 0.7:
+            parts.append(f"- 모델의 설명력(R²)은 **{r2:.2f}**로 매우 높습니다.")
+        elif r2 >= 0.4:
+            parts.append(f"- 모델의 설명력(R²)은 **{r2:.2f}**로 보통 수준입니다.")
+        else:
+            parts.append(f"- 모델의 설명력(R²)은 **{r2:.2f}**로 낮아 변수들이 충분히 설명하지 못하고 있을 수 있습니다.")
 
     # 🔹 표준편차
     if model_type in ["선형회귀", "랜덤포레스트"]:
