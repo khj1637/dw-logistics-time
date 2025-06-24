@@ -15,7 +15,6 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics.pairwise import euclidean_distances
 from sklearn.preprocessing import RobustScaler
 from sklearn.pipeline import make_pipeline
-from weasyprint import HTML
  
 st.markdown(
     """
@@ -54,52 +53,6 @@ def load_data():
 df_data = load_data()
 
 # 4. 보조 함수들
-def save_pdf_from_html(html_content):
-    buffer = BytesIO()
-    HTML(string=html_content).write_pdf(buffer)
-    return buffer.getvalue()
-
-def render_prediction_html(project_name, best_pred, best_model, best_trust, final_table_df, fig_path, explain_texts):
-    html = f"""
-    <html><head><meta charset="utf-8">
-    <style>
-        body {{ font-family: 'Nanum Gothic', sans-serif; margin: 20px; }}
-        .box {{
-            background-color: #f4f8fc;
-            border: 1px solid #d0e3f1;
-            border-radius: 12px;
-            padding: 25px;
-            text-align: center;
-        }}
-        .title {{ font-size: 24px; color: #004080; font-weight: bold; }}
-        .value {{ font-size: 36px; color: #00264d; margin-top: 10px; }}
-        .desc {{ font-size: 14px; color: #444; margin-top: 5px; }}
-        table {{ border-collapse: collapse; width: 100%; margin-top: 20px; }}
-        th, td {{ border: 1px solid #aaa; padding: 8px; text-align: center; font-size: 14px; }}
-        h3 {{ margin-top: 25px; }}
-    </style>
-    </head><body>
-
-    <div class="box">
-        <div class="title">📌 {project_name} 산출 결과</div>
-        <div class="value">{best_pred} 개월</div>
-        <div class="desc">
-            본 결과는 3개 모델 중 <b>{best_model}</b> 기반 예측이며 신뢰도는 <b>{best_trust}%</b>입니다.
-        </div>
-    </div>
-
-    <h3>예측 결과 요약</h3>
-    {final_table_df.to_html(index=False)}
-
-    <h3>예측 결과 그래프</h3>
-    <img src="data:image/png;base64,{fig_path}" width="600"/>
-
-    {explain_texts}
-
-    </body></html>
-    """
-    return html
-
 def detect_outlier_floors(floor_count):
     if floor_count >= 50:
         st.warning("⚠️ 입력하신 층수가 비정상적으로 높습니다. 다시 확인해주세요.")
@@ -615,20 +568,3 @@ if st.button("예측 시작", use_container_width=True):
         st.markdown("📌 **참조된 유사 프로젝트**는 입력 조건과 범주형 항목이 일치한 실제 사례들입니다.")
     else:
         st.warning("⚠️ 유사 프로젝트를 찾을 수 없습니다. 입력값을 다시 확인해 주세요.")
-
-if st.session_state.get("prediction_done", False):
-    if st.button("📄 결과 PDF 저장"):
-        # 그래프 저장
-        img_buf = BytesIO()
-        fig.savefig(img_buf, format="png")
-        img_base64 = base64.b64encode(img_buf.getvalue()).decode()
-
-        # HTML 렌더링
-        explain_all = f"<h3>선형회귀 설명</h3><p>{explain1}</p><h3>랜덤포레스트 설명</h3><p>{explain2}</p><h3>유사 프로젝트 기반 설명</h3><p>{explain3}</p>"
-        html_result = render_prediction_html(project_name, best_pred, best_model, best_trust, final_table, img_base64, explain_all)
-
-        # PDF 생성
-        pdf_bytes = save_pdf_from_html(html_result)
-
-        # 다운로드 버튼
-        st.download_button("📥 결과 PDF 다운로드", data=pdf_bytes, file_name=f"{project_name}_예측결과.pdf", mime="application/pdf")
