@@ -371,6 +371,17 @@ if st.button("예측 시작", use_container_width=True):
     sim_std = similar_df["전체공사기간"].std()
     mean_similarity = similar_df["유사도점수"].mean()
 
+    # 선형회귀 예측값의 std (실제값과의 오차)
+    preds1_all = model1.predict(X_all_imputed)
+    std1 = np.std(preds1_all - y_all)
+
+    # 랜덤포레스트 예측값의 std
+    preds2_all = model2.predict(X_all_imputed)
+    std2 = np.std(preds2_all - y_all)
+
+    # 유사도 기반 모델의 std는 기존 유지
+    std3 = sim_std
+ 
     # 앙상블
     pred_ensemble = (pred1 * r2_1 + pred2 * r2_2 + pred3 * 1.0) / (r2_1 + r2_2 + 1.0)
 
@@ -411,14 +422,15 @@ if st.button("예측 시작", use_container_width=True):
 
 
      
-        trust1 = get_realistic_trust_score(r2_1, std=sim_std, sim_mean=mean_similarity, sample_n=len(similar_df), total_data=total_data_count)
-        explain1 = generate_explanation("선형회귀", r2_1, sim_std, mean_similarity, train_count_linear, trust1)
+        trust1 = get_realistic_trust_score(r2_1, std=std1, sim_mean=mean_similarity, sample_n=len(similar_df), total_data=total_data_count)
+        explain1 = generate_explanation("선형회귀", r2_1, std1, mean_similarity, train_count_linear, trust1)
 
-        trust2 = get_realistic_trust_score(r2_2, std=sim_std, sim_mean=mean_similarity, sample_n=len(similar_df), total_data=total_data_count)
-        explain2 = generate_explanation("랜덤포레스트", r2_2, sim_std, mean_similarity, train_count_rf, trust2)
+        trust2 = get_realistic_trust_score(r2_2, std=std2, sim_mean=mean_similarity, sample_n=len(similar_df), total_data=total_data_count)
+        explain2 = generate_explanation("랜덤포레스트", r2_2, std2, mean_similarity, train_count_rf, trust2)
 
-        trust3 = get_realistic_trust_score(1.0, std=sim_std, sim_mean=mean_similarity, sample_n=len(similar_df), total_data=total_data_count)
-        explain3 = generate_explanation("유사 프로젝트 기반", 1.0, sim_std, mean_similarity, train_count_similar, trust3)
+        trust3 = get_realistic_trust_score(1.0, std=std3, sim_mean=mean_similarity, sample_n=len(similar_df), total_data=total_data_count)
+        explain3 = generate_explanation("유사 프로젝트 기반", 1.0, std3, mean_similarity, train_count_similar, trust3)
+
         
 
      
