@@ -411,7 +411,7 @@ if st.button("예측 시작", use_container_width=True):
         total_data_count = len(df_model)
 
         trust1 = get_realistic_trust_score(r2_1, std=sim_std, sim_mean=mean_similarity, sample_n=len(similar_df), total_data=total_data_count)
-        explain1 = generate_explanation("선형회귀", r2_1, std, sim_mean, sample_n, total_data, trust1)
+        explain1 = generate_explanation("선형회귀", r2_1, sim_std, mean_similarity, len(similar_df), total_data_count, trust1)
 
         trust2 = get_realistic_trust_score(r2_2, std=sim_std, sim_mean=mean_similarity, sample_n=len(similar_df), total_data=total_data_count)
         explain2 = generate_explanation("랜덤포레스트", r2_2, sim_std, mean_similarity, len(similar_df), total_data_count, trust2)
