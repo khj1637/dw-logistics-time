@@ -336,6 +336,7 @@ with st.expander("선택 입력값", expanded=True):
 # 8. 예측 실행 및 결과 출력
 
 if st.button("예측 시작", use_container_width=True):
+    st.session_state.prediction_done = True
     # 필수 입력값 누락 체크
     required_fields = {
         "대지면적": land_area,
