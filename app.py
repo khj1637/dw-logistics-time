@@ -58,19 +58,43 @@ def detect_outlier_floors(floor_count):
     if floor_count >= 50:
         st.warning("⚠️ 입력하신 층수가 비정상적으로 높습니다. 다시 확인해주세요.")
 
-def get_trust_score_percent(r2, std=None):
-    base_score = r2 * 100  # R² 1.0이면 100%
-    
-    # 편차 벌점: std > 5이면 10% 감점, std > 8이면 20% 감점
+def get_realistic_trust_score(r2, std=None, sim_mean=None, sample_n=None):
+    score = 0
+
+    # 1. 모델 설명력 기반 (최대 50점)
+    score += r2 * 50  # R² = 1.0이면 50점
+
+    # 2. 유사도 평균 기반 평가 (최대 30점)
+    if sim_mean is not None:
+        if sim_mean >= 80:
+            score += 30
+        elif sim_mean >= 60:
+            score += 25
+        elif sim_mean >= 40:
+            score += 20
+        elif sim_mean >= 20:
+            score += 10
+        else:
+            score += 0
+
+    # 3. 표준편차 기반 안정성 평가 (최대 20점)
     if std is not None:
-        if std > 8:
-            base_score -= 20
-        elif std > 5:
-            base_score -= 10
-    
-    # 하한선 보정: 점수가 너무 낮으면 25%로 클램핑
-    score = max(25, min(100, base_score))
-    return round(score)
+        if std <= 3:
+            score += 20
+        elif std <= 5:
+            score += 15
+        elif std <= 8:
+            score += 10
+        else:
+            score += 0
+
+    # 4. 유사 프로젝트 수 보정
+    if sample_n is not None and sample_n < 3:
+        score -= 10  # 너무 적으면 신뢰도 감소
+
+    # 5. 점수 클램핑
+    score = max(10, min(95, score))  # 하한 10, 상한 95
+    return int(round(score))
 
 @st.cache_data
 def knn_impute(df_input, n_neighbors=3):
@@ -318,8 +342,12 @@ if st.button("예측 시작", use_container_width=True):
     
     if project_name:
             # ⭐ 신뢰도 점수 계산 및 별점 변환
-        trust_score = (r2_1 + r2_2 + 1.0) / 3
-        trust_score_percent = get_trust_score_percent(trust_score)
+        trust_score = get_realistic_trust_score(
+            r2=(r2_1 + r2_2) / 2,
+            std=sim_std,
+            sim_mean=mean_similarity,
+            sample_n=len(similar_df)
+        )
         
         st.markdown(f"""
             <div style="
