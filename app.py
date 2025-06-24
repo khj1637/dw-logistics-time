@@ -378,7 +378,7 @@ if st.button("예측 시작", use_container_width=True):
 
     # 신뢰도 검사
     warnings = []
-    if sim_std > 6:
+    if sim_std > 7:
         warnings.append("유사 프로젝트 간 공사기간 편차가 커서 신뢰도가 낮습니다.")
     if mean_similarity < 25:
         warnings.append("입력 조건과 유사한 프로젝트가 적어 예측 정확도가 낮을 수 있습니다.")
