@@ -6,4 +6,3 @@ matplotlib
 fonttools
 seaborn
 pillow
-weasyprint
