@@ -42,7 +42,7 @@ font_path = "./NanumGothic.ttf"  # 또는 "./fonts/NanumGothic.ttf"
 fontprop = fm.FontProperties(fname=font_path)
 plt.rcParams['font.family'] = fontprop.get_name()
 plt.rcParams['axes.unicode_minus'] = False
-
+ 
 # 2. 데이터 불러오기
 @st.cache_data
 def load_data():
