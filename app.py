@@ -220,10 +220,10 @@ def generate_explanation(model_type, r2, std, sim_mean, sample_n, total_data, tr
     parts.append(f"- 입력값과 유사한 프로젝트의 평균 유사도는 **{sim_mean:.1f}점**이며, 총 **{sample_n}건**의 사례가 참조되었습니다.")
 
     # 🔹 데이터량 보정
-    if total_data < 100:
-        parts.append(f"- 전체 학습 데이터가 **{total_data}건**으로 적어 모델 일반화에 제한이 있을 수 있습니다.")
+    if sample_n < 100:
+        parts.append(f"- 이 모델은 총 **{sample_n}건**의 데이터를 기반으로 학습되어, 일반화에는 제한이 있을 수 있습니다.")
     else:
-        parts.append(f"- 전체 학습 데이터는 **{total_data}건**으로 충분한 수준입니다.")
+        parts.append(f"- 이 모델은 총 **{sample_n}건**의 학습 데이터를 기반으로 예측하였습니다.")
 
     # 🔹 최종 신뢰도
     parts.append(f"- 최종 신뢰도 점수는 **{trust_score}점**입니다.")
@@ -409,15 +409,21 @@ if st.button("예측 시작", use_container_width=True):
 
         # 총 데이터 수 정의
         total_data_count = len(df_model)
+     
+        train_count_linear = len(X_all_imputed)  # 선형회귀 & 랜덤포레스트 동일
+        train_count_rf = len(X_all_imputed)
+        train_count_similar = len(similar_df)
 
+
+     
         trust1 = get_realistic_trust_score(r2_1, std=sim_std, sim_mean=mean_similarity, sample_n=len(similar_df), total_data=total_data_count)
-        explain1 = generate_explanation("선형회귀", r2_1, sim_std, mean_similarity, len(similar_df), total_data_count, trust1)
+        explain1 = generate_explanation("선형회귀", r2_1, sim_std, mean_similarity, train_count_linear, trust1)
 
         trust2 = get_realistic_trust_score(r2_2, std=sim_std, sim_mean=mean_similarity, sample_n=len(similar_df), total_data=total_data_count)
-        explain2 = generate_explanation("랜덤포레스트", r2_2, sim_std, mean_similarity, len(similar_df), total_data_count, trust2)
+        lain2 = generate_explanation("랜덤포레스트", r2_2, sim_std, mean_similarity, train_count_rf, trust2)
 
         trust3 = get_realistic_trust_score(1.0, std=sim_std, sim_mean=mean_similarity, sample_n=len(similar_df), total_data=total_data_count)
-        explain3 = generate_explanation("유사 프로젝트 기반", 1.0, sim_std, mean_similarity, len(similar_df), total_data_count, trust3)
+        lain3 = generate_explanation("유사 프로젝트 기반", 1.0, sim_std, mean_similarity, train_count_similar, trust3)
 
         # 가장 신뢰도 높은 모델 찾기
         model_names = ["선형회귀", "랜덤포레스트", "유사 프로젝트 기반"]
