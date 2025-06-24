@@ -58,12 +58,19 @@ def detect_outlier_floors(floor_count):
     if floor_count >= 50:
         st.warning("⚠️ 입력하신 층수가 비정상적으로 높습니다. 다시 확인해주세요.")
 
-def get_star_score(r2, std=None):
-    score = r2 * 5
-    if std is not None and std > 5:
-        score -= 1
-    score = max(0, min(5, score))
-    return "★" * int(round(score)) + "☆" * (5 - int(round(score)))
+def get_trust_score_percent(r2, std=None):
+    base_score = r2 * 100  # R² 1.0이면 100%
+    
+    # 편차 벌점: std > 5이면 10% 감점, std > 8이면 20% 감점
+    if std is not None:
+        if std > 8:
+            base_score -= 20
+        elif std > 5:
+            base_score -= 10
+    
+    # 하한선 보정: 점수가 너무 낮으면 25%로 클램핑
+    score = max(25, min(100, base_score))
+    return round(score)
 
 @st.cache_data
 def knn_impute(df_input, n_neighbors=3):
@@ -312,7 +319,7 @@ if st.button("예측 시작", use_container_width=True):
     if project_name:
             # ⭐ 신뢰도 점수 계산 및 별점 변환
         trust_score = (r2_1 + r2_2 + 1.0) / 3
-        star_rating = get_star_score(trust_score)
+        trust_score_percent = get_trust_score_percent(trust_score)
         
         st.markdown(f"""
             <div style="
@@ -335,7 +342,7 @@ if st.button("예측 시작", use_container_width=True):
                     <strong style="color:#004080;">유사 프로젝트 기반</strong> 결과를 종합하여 계산되었습니다.
                 </div>
                 <div style="text-align: center; font-size: 0.9rem; color: #444; margin-top: 8px;">
-                    해당 예측 결과의 <strong style="color:#004080;">신뢰도</strong>는 <span style="font-weight: bold;">{star_rating}</span> 입니다.
+                    해당 예측 결과의 <strong style="color:#004080;">신뢰도</strong>는 <span style="font-weight: bold;">{trust_score_percent}%</span> 입니다.
                 </div>
             </div>
         """, unsafe_allow_html=True)
@@ -345,10 +352,10 @@ if st.button("예측 시작", use_container_width=True):
     final_table = pd.DataFrame({
         "예측 방식": ["선형회귀", "랜덤포레스트", "유사 프로젝트 기반"],
         "예측값 (개월)": [round(pred1, 1), round(pred2, 1), round(pred3, 1)],
-        "신뢰도": [
-            get_star_score(r2_1),
-            get_star_score(r2_2),
-            get_star_score(1.0, sim_std)
+        "신뢰도 (%)": [
+            get_trust_score_percent(r2_1),
+            get_trust_score_percent(r2_2),
+            get_trust_score_percent(1.0, sim_std)
         ]
     })
     st.dataframe(final_table)
