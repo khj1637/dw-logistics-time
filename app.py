@@ -509,13 +509,13 @@ if st.button("예측 시작", use_container_width=True):
 
         st.pyplot(fig)
 
-    with st.expander(" 선형회귀 신뢰도 설명", expanded=False):
+    with st.expander(" 선형회귀 신뢰도 설명", expanded=true):
         st.markdown(explain1)
 
-    with st.expander(" 랜덤포레스트 신뢰도 설명", expanded=False):
+    with st.expander(" 랜덤포레스트 신뢰도 설명", expanded=true):
         st.markdown(explain2)
 
-    with st.expander(" 유사 프로젝트 기반 신뢰도 설명", expanded=False):
+    with st.expander(" 유사 프로젝트 기반 신뢰도 설명", expanded=true):
         st.markdown(explain3)
     
     # 📉 신뢰도 기반 경고 메시지 출력
