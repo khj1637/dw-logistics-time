@@ -181,6 +181,42 @@ def parse_int(text):
     except:
         return np.nan
 
+def generate_explanation(title, r2, std, sim_mean, sample_n, total_data, trust_score):
+    parts = []
+
+    parts.append(f"### {title} 결과 해석")
+
+    # 설명력
+    if r2 >= 0.7:
+        parts.append(f"- 모델의 설명력(R²)은 **{r2:.2f}**로 매우 높아, 전체 데이터의 공사기간 변동을 잘 설명하고 있습니다.")
+    elif r2 >= 0.4:
+        parts.append(f"- 모델의 설명력(R²)은 **{r2:.2f}**로 보통 수준입니다.")
+    else:
+        parts.append(f"- 모델의 설명력(R²)은 **{r2:.2f}**로 낮아, 변수들이 공사기간을 충분히 설명하지 못하고 있을 수 있습니다.")
+
+    # 표준편차
+    if std <= 3:
+        parts.append(f"- 유사 프로젝트 간 공사기간 표준편차가 **{std:.1f}개월**로, 결과가 안정적입니다.")
+    elif std <= 6:
+        parts.append(f"- 유사 프로젝트 간 공사기간 표준편차가 **{std:.1f}개월**로, 중간 수준의 변동성을 보입니다.")
+    else:
+        parts.append(f"- 유사 프로젝트 간 공사기간 표준편차가 **{std:.1f}개월**로, 예측값의 신뢰도에 주의가 필요합니다.")
+
+    # 유사도
+    parts.append(f"- 입력값과 유사한 프로젝트의 평균 유사도는 **{sim_mean:.1f}점**이며, 총 **{sample_n}건**의 사례가 참조되었습니다.")
+
+    # 데이터량 보정
+    if total_data < 100:
+        parts.append(f"- 전체 학습 데이터가 **{total_data}건**으로 적어 모델 일반화에 제한이 있을 수 있습니다.")
+    else:
+        parts.append(f"- 전체 학습 데이터는 **{total_data}건**으로 충분한 수준입니다.")
+
+    # 최종 신뢰도
+    parts.append(f"- 최종 신뢰도 점수는 **{trust_score}점**입니다.")
+
+    return "\n\n".join(parts)
+
+
 # 7. 사용자 입력 UI
 
 st.markdown("""
