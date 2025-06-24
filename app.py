@@ -371,15 +371,11 @@ if st.button("예측 시작", use_container_width=True):
     sim_std = similar_df["전체공사기간"].std()
     mean_similarity = similar_df["유사도점수"].mean()
 
-    # 선형회귀 예측값의 std (실제값과의 오차)
     preds1_all = model1.predict(X_all_imputed)
-    std1 = np.std(preds1_all - y_all)
-
-    # 랜덤포레스트 예측값의 std
     preds2_all = model2.predict(X_all_imputed)
-    std2 = np.std(preds2_all - y_all)
 
-    # 유사도 기반 모델의 std는 기존 유지
+    std1 = np.std(preds1_all - y_all)
+    std2 = np.std(preds2_all - y_all)
     std3 = sim_std
  
     # 앙상블
