@@ -426,7 +426,7 @@ if st.button("예측 시작", use_container_width=True):
         trust3 = get_realistic_trust_score(1.0, std=std3, sim_mean=mean_similarity, sample_n=train_count_similar, total_data=total_data_count)
         explain1 = generate_explanation("선형회귀", r2_1, std1, trust1)
         explain2 = generate_explanation("랜덤포레스트", r2_2, std2, trust2)
-        explain3 = generate_explanation("유사 프로젝트 기반", 1.0, std3, trust3)
+        explain3 = generate_explanation("유사 프로젝트 기반", None, std3, trust3)
         
 
      
