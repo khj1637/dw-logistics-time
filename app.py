@@ -393,6 +393,16 @@ if st.button("예측 시작", use_container_width=True):
             total_data=total_data_count  # ← 여기에 총 유효 데이터 수 전달
         )
         
+        # 가장 신뢰도 높은 모델 찾기
+        model_names = ["선형회귀", "랜덤포레스트", "유사 프로젝트 기반"]
+        pred_values = [round(pred1, 1), round(pred2, 1), round(pred3, 1)]
+        trust_scores = [trust1, trust2, trust3]
+        best_idx = int(np.argmax(trust_scores))
+        best_model = model_names[best_idx]
+        best_pred = pred_values[best_idx]
+        best_trust = trust_scores[best_idx]
+
+        # 결과 출력
         st.markdown(f"""
             <div style="
                 background-color: #f4f8fc;
@@ -407,14 +417,11 @@ if st.button("예측 시작", use_container_width=True):
                     📌 {project_name} 산출 결과
                 </div>
                 <div style="text-align: center; font-size: 2.4rem; font-weight: bold; color: #00264d; margin-top: 12px;">
-                    {round(pred_ensemble, 1)} 개월
+                    {best_pred} 개월
                 </div>
-                <div style="text-align: center; font-size: 0.95rem; color: #555; margin-top: 10px;">
-                    최종 예측 결과는 <strong style="color:#004080;">머신러닝 (선형회귀, 랜덤포레스트)</strong>과
-                    <strong style="color:#004080;">유사 프로젝트 기반</strong> 결과를 종합하여 계산되었습니다.
-                </div>
-                <div style="text-align: center; font-size: 0.9rem; color: #444; margin-top: 8px;">
-                    해당 예측 결과의 <strong style="color:#004080;">신뢰도</strong>는 <span style="font-weight: bold;">{trust_score}%</span> 입니다.
+                <div style="text-align: center; font-size: 0.95rem; color: #444; margin-top: 10px;">
+                    본 결과는 3개 모델의 예측값 중 <strong style="color:#004080;">{best_trust}%</strong>로 가장 신뢰도가 높은
+                    <strong style="color:#004080;">{best_model}</strong> 기반의 예측 결과값입니다.
                 </div>
             </div>
         """, unsafe_allow_html=True)
