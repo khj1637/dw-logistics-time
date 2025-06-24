@@ -15,7 +15,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics.pairwise import euclidean_distances
 from sklearn.preprocessing import RobustScaler
 from sklearn.pipeline import make_pipeline
-
+ 
 st.markdown(
     """
     <style>
