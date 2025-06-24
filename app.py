@@ -392,7 +392,28 @@ if st.button("예측 시작", use_container_width=True):
             sample_n=len(similar_df),
             total_data=total_data_count  # ← 여기에 총 유효 데이터 수 전달
         )
-        
+
+    # 총 데이터 수 정의
+    total_data_count = len(df_model)
+
+    trust1 = get_realistic_trust_score(r2_1, std=sim_std, sim_mean=mean_similarity, sample_n=len(similar_df), total_data=total_data_count)
+    explain1 = generate_explanation(" 선형회귀", r2_1, sim_std, mean_similarity, len(similar_df), total_data_count, trust1)
+
+    trust2 = get_realistic_trust_score(r2_2, std=sim_std, sim_mean=mean_similarity, sample_n=len(similar_df), total_data=total_data_count)
+    explain2 = generate_explanation(" 랜덤포레스트", r2_2, sim_std, mean_similarity, len(similar_df), total_data_count, trust2)
+
+    trust3 = get_realistic_trust_score(1.0, std=sim_std, sim_mean=mean_similarity, sample_n=len(similar_df), total_data=total_data_count)
+    explain3 = generate_explanation(" 유사 프로젝트 기반", 1.0, sim_std, mean_similarity, len(similar_df), total_data_count, trust3)
+
+    # 가장 신뢰도 높은 모델 찾기
+    model_names = ["선형회귀", "랜덤포레스트", "유사 프로젝트 기반"]
+    pred_values = [round(pred1, 1), round(pred2, 1), round(pred3, 1)]
+    trust_scores = [trust1, trust2, trust3]
+    best_idx = int(np.argmax(trust_scores))
+    best_model = model_names[best_idx]
+    best_pred = pred_values[best_idx]
+    best_trust = trust_scores[best_idx]
+     
         # 결과 출력
         st.markdown(f"""
             <div style="
@@ -417,26 +438,7 @@ if st.button("예측 시작", use_container_width=True):
             </div>
         """, unsafe_allow_html=True)
 
-    # 총 데이터 수 정의
-    total_data_count = len(df_model)
 
-    trust1 = get_realistic_trust_score(r2_1, std=sim_std, sim_mean=mean_similarity, sample_n=len(similar_df), total_data=total_data_count)
-    explain1 = generate_explanation(" 선형회귀", r2_1, sim_std, mean_similarity, len(similar_df), total_data_count, trust1)
-
-    trust2 = get_realistic_trust_score(r2_2, std=sim_std, sim_mean=mean_similarity, sample_n=len(similar_df), total_data=total_data_count)
-    explain2 = generate_explanation(" 랜덤포레스트", r2_2, sim_std, mean_similarity, len(similar_df), total_data_count, trust2)
-
-    trust3 = get_realistic_trust_score(1.0, std=sim_std, sim_mean=mean_similarity, sample_n=len(similar_df), total_data=total_data_count)
-    explain3 = generate_explanation(" 유사 프로젝트 기반", 1.0, sim_std, mean_similarity, len(similar_df), total_data_count, trust3)
-
-    # 가장 신뢰도 높은 모델 찾기
-    model_names = ["선형회귀", "랜덤포레스트", "유사 프로젝트 기반"]
-    pred_values = [round(pred1, 1), round(pred2, 1), round(pred3, 1)]
-    trust_scores = [trust1, trust2, trust3]
-    best_idx = int(np.argmax(trust_scores))
-    best_model = model_names[best_idx]
-    best_pred = pred_values[best_idx]
-    best_trust = trust_scores[best_idx]
  
     # 예측 결과 표
     st.subheader("■ 예측 결과 요약")
