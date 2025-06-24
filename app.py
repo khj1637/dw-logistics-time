@@ -430,13 +430,13 @@ if st.button("예측 시작", use_container_width=True):
 
 
      
-        trust1 = get_realistic_trust_score(r2_1, std=std1, sim_mean=mean_similarity, sample_n=len(similar_df), total_data=total_data_count)
+        trust1 = get_realistic_trust_score(r2_1, std=std1, sim_mean=mean_similarity, sample_n=train_count_linear, total_data=total_data_count)
         explain1 = generate_explanation("선형회귀", r2_1, std1, mean_similarity, train_count_linear, trust1)
 
-        trust2 = get_realistic_trust_score(r2_2, std=std2, sim_mean=mean_similarity, sample_n=len(similar_df), total_data=total_data_count)
+        trust2 = get_realistic_trust_score(r2_2, std=std2, sim_mean=mean_similarity, sample_n=train_count_rf, total_data=total_data_count)
         explain2 = generate_explanation("랜덤포레스트", r2_2, std2, mean_similarity, train_count_rf, trust2)
 
-        trust3 = get_realistic_trust_score(1.0, std=std3, sim_mean=mean_similarity, sample_n=len(similar_df), total_data=total_data_count)
+        trust3 = get_realistic_trust_score(1.0, std=std3, sim_mean=mean_similarity, sample_n=train_count_similar, total_data=total_data_count)
         explain3 = generate_explanation("유사 프로젝트 기반", 1.0, std3, mean_similarity, train_count_similar, trust3)
 
         
