@@ -181,7 +181,7 @@ def parse_int(text):
     except:
         return np.nan
 
-def generate_explanation(model_type, r2, std, sim_mean, sample_n, trust_score):
+def generate_explanation(model_type, r2, std, trust_score):
     parts = []
 
     parts.append(f"### {model_type} 결과 해석")
@@ -217,18 +217,6 @@ def generate_explanation(model_type, r2, std, sim_mean, sample_n, trust_score):
             parts.append(f"- 유사 프로젝트 공사기간의 표준편차가 **{std:.1f}개월**로 중간 수준입니다.")
         else:
             parts.append(f"- 유사 프로젝트 간 공사기간 편차가 **{std:.1f}개월**로 커서 신뢰도가 낮을 수 있습니다.")
-
-    # 🔹 유사도
-    parts.append(f"- 평균 유사도는 **{sim_mean:.1f}점**, 유사 프로젝트 수는 **{sample_n}건**입니다.")
-
-    # 🔹 학습 데이터량 기반 설명
-    if model_type in ["선형회귀", "랜덤포레스트"]:
-        if sample_n < 100:
-            parts.append(f"- 이 모델은 총 **{sample_n}건**의 학습 데이터를 기반으로 예측되어 일반화에 제한이 있을 수 있습니다.")
-        else:
-            parts.append(f"- 총 **{sample_n}건**의 학습 데이터를 기반으로 예측하였습니다.")
-    else:  # 유사 프로젝트 기반
-        parts.append(f"- 예측에 활용된 유사 프로젝트는 총 **{sample_n}건**입니다.")
 
     # 🔹 신뢰도
     parts.append(f"- 최종 신뢰도 점수는 **{trust_score}점**입니다.")
@@ -431,14 +419,11 @@ if st.button("예측 시작", use_container_width=True):
 
      
         trust1 = get_realistic_trust_score(r2_1, std=std1, sim_mean=mean_similarity, sample_n=train_count_linear, total_data=total_data_count)
-        explain1 = generate_explanation("선형회귀", r2_1, std1, mean_similarity, train_count_linear, trust1)
-
         trust2 = get_realistic_trust_score(r2_2, std=std2, sim_mean=mean_similarity, sample_n=train_count_rf, total_data=total_data_count)
-        explain2 = generate_explanation("랜덤포레스트", r2_2, std2, mean_similarity, train_count_rf, trust2)
-
         trust3 = get_realistic_trust_score(1.0, std=std3, sim_mean=mean_similarity, sample_n=train_count_similar, total_data=total_data_count)
-        explain3 = generate_explanation("유사 프로젝트 기반", 1.0, std3, mean_similarity, train_count_similar, trust3)
-
+        explain1 = generate_explanation("선형회귀", r2_1, std1, trust1)
+        explain2 = generate_explanation("랜덤포레스트", r2_2, std2, trust2)
+        explain3 = generate_explanation("유사 프로젝트 기반", 1.0, std3, trust3)
         
 
      
