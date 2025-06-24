@@ -14,6 +14,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics.pairwise import euclidean_distances
 from sklearn.preprocessing import RobustScaler
+from sklearn.pipeline import make_pipeline
 
 st.markdown(
     """
@@ -275,7 +276,7 @@ if st.button("예측 시작", use_container_width=True):
     X_all_imputed = knn_impute(X_all)
 
     # 선형회귀
-    model1 = LinearRegression().fit(X_all_imputed, y_all)
+    model1 = make_pipeline(RobustScaler(), LinearRegression()).fit(X_all_imputed, y_all)
     pred1 = model1.predict(user_corrected)[0]
     r2_1 = model1.score(X_all_imputed, y_all)
 
