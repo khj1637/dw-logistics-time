@@ -238,15 +238,15 @@ with st.expander("필수 입력값", expanded=True):
     col1, col2, col3 = st.columns(3)
     with col1:
         project_name = st.text_input("프로젝트명")
-        floors_below_str = st.text_input("지하층수", placeholder="예: 1")
+        floors_below_str = st.text_input("지하층수", placeholder="숫자만 입력")
         
     with col2:
-        floors_above_str = st.text_input("지상층수", placeholder="예: 4")
-        land_area_str = st.text_input("대지면적 (㎡)", placeholder="예: 45085")
+        floors_above_str = st.text_input("지상층수", placeholder="숫자만 입력")
+        land_area_str = st.text_input("대지면적 (㎡)")
               
     with col3:
-        building_area_str = st.text_input("건축면적 (㎡)", placeholder="예: 26166")
-        total_area_str = st.text_input("연면적 (㎡)", placeholder="예: 70841")
+        building_area_str = st.text_input("건축면적 (㎡)")
+        total_area_str = st.text_input("연면적 (㎡)")
 
     # 수치형 변환
     land_area = parse_float(land_area_str)
