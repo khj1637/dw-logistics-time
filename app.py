@@ -181,12 +181,26 @@ def parse_int(text):
     except:
         return np.nan
 
-def generate_explanation(title, r2, std, sim_mean, sample_n, total_data, trust_score):
+def generate_explanation(model_type, r2, std, sim_mean, sample_n, total_data, trust_score):
     parts = []
 
-    parts.append(f"### {title} 결과 해석")
+    parts.append(f"### {model_type} 결과 해석")
 
-    # 설명력
+    # 🔹 모델 특성 설명
+    if model_type == "선형회귀":
+        parts.append("- 선형회귀 모델은 입력된 수치형 변수들과 공사기간 간의 선형적 관계를 학습합니다.")
+        parts.append("- 주요 영향 변수들의 기울기(계수)를 바탕으로 직접적인 공사기간을 예측합니다.")
+        parts.append("- 다만 변수 간 상관관계가 낮거나 이상치가 많을 경우 예측 성능이 저하될 수 있습니다.")
+    elif model_type == "랜덤포레스트":
+        parts.append("- 랜덤포레스트는 수많은 결정트리를 이용해 비선형적인 변수 조합을 학습합니다.")
+        parts.append("- 변수 간 상호작용이 강할수록 효과적인 예측이 가능하며, 이상치에 비교적 강건합니다.")
+        parts.append("- 주요 변수의 중요도를 기반으로 전체 예측에 기여한 정도를 판단할 수 있습니다.")
+    elif model_type == "유사 프로젝트 기반":
+        parts.append("- 유사 프로젝트 기반 모델은 입력 조건과 유사한 실제 사례의 공사기간을 가중 평균하여 예측합니다.")
+        parts.append("- 유사도가 높은 프로젝트가 많을수록 예측의 신뢰도가 높습니다.")
+        parts.append("- 데이터 기반의 직관적인 방식으로, 설명력이 직관적이며 해석이 용이합니다.")
+
+    # 🔹 설명력
     if r2 >= 0.7:
         parts.append(f"- 모델의 설명력(R²)은 **{r2:.2f}**로 매우 높아, 전체 데이터의 공사기간 변동을 잘 설명하고 있습니다.")
     elif r2 >= 0.4:
@@ -194,7 +208,7 @@ def generate_explanation(title, r2, std, sim_mean, sample_n, total_data, trust_s
     else:
         parts.append(f"- 모델의 설명력(R²)은 **{r2:.2f}**로 낮아, 변수들이 공사기간을 충분히 설명하지 못하고 있을 수 있습니다.")
 
-    # 표준편차
+    # 🔹 표준편차
     if std <= 3:
         parts.append(f"- 유사 프로젝트 간 공사기간 표준편차가 **{std:.1f}개월**로, 결과가 안정적입니다.")
     elif std <= 6:
@@ -202,16 +216,16 @@ def generate_explanation(title, r2, std, sim_mean, sample_n, total_data, trust_s
     else:
         parts.append(f"- 유사 프로젝트 간 공사기간 표준편차가 **{std:.1f}개월**로, 예측값의 신뢰도에 주의가 필요합니다.")
 
-    # 유사도
+    # 🔹 유사도
     parts.append(f"- 입력값과 유사한 프로젝트의 평균 유사도는 **{sim_mean:.1f}점**이며, 총 **{sample_n}건**의 사례가 참조되었습니다.")
 
-    # 데이터량 보정
+    # 🔹 데이터량 보정
     if total_data < 100:
         parts.append(f"- 전체 학습 데이터가 **{total_data}건**으로 적어 모델 일반화에 제한이 있을 수 있습니다.")
     else:
         parts.append(f"- 전체 학습 데이터는 **{total_data}건**으로 충분한 수준입니다.")
 
-    # 최종 신뢰도
+    # 🔹 최종 신뢰도
     parts.append(f"- 최종 신뢰도 점수는 **{trust_score}점**입니다.")
 
     return "\n\n".join(parts)
@@ -397,7 +411,7 @@ if st.button("예측 시작", use_container_width=True):
         total_data_count = len(df_model)
 
         trust1 = get_realistic_trust_score(r2_1, std=sim_std, sim_mean=mean_similarity, sample_n=len(similar_df), total_data=total_data_count)
-        explain1 = generate_explanation(" 선형회귀", r2_1, sim_std, mean_similarity, len(similar_df), total_data_count, trust1)
+        explain1 = generate_explanation("선형회귀", r2_1, std, sim_mean, sample_n, total_data, trust1)
 
         trust2 = get_realistic_trust_score(r2_2, std=sim_std, sim_mean=mean_similarity, sample_n=len(similar_df), total_data=total_data_count)
         explain2 = generate_explanation(" 랜덤포레스트", r2_2, sim_std, mean_similarity, len(similar_df), total_data_count, trust2)
