@@ -2,13 +2,8 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-import re
-import base64
-import streamlit.components.v1 as components
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
-from PIL import Image
-from io import BytesIO
 from sklearn.impute import KNNImputer
 from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import RandomForestRegressor
