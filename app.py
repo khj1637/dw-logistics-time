@@ -506,28 +506,55 @@ if st.button("예측 시작", use_container_width=True):
 
         st.pyplot(fig)
 
-    # 🎯 피처 중요도 시각화
-    st.subheader("■ 랜덤포레스트 기반 피처 중요도")
+    # 🎯 피처 중요도 시각화 (모던 스타일)
+    st.subheader("■ 주요 변수 영향력 (Feature Importance)")
 
     importances = model2.feature_importances_
     feature_names = X_all_imputed.columns
     sorted_idx = np.argsort(importances)[::-1]
     top_n = 10
 
-    fig_imp, ax_imp = plt.subplots(figsize=(8, 5))
-    ax_imp.barh(
+    fig_imp, ax = plt.subplots(figsize=(8, 5))
+    
+    bars = ax.barh(
         y=np.array(feature_names)[sorted_idx[:top_n]][::-1],
         width=importances[sorted_idx[:top_n]][::-1],
-        align="center"
+        align="center",
+        height=0.5
     )
-    ax_imp.set_xlabel("중요도 (0~1)", fontproperties=fontprop)
-    ax_imp.set_title("랜덤포레스트 피처 중요도", fontproperties=fontprop)
-    ax_imp.tick_params(axis='y', labelsize=10)
-    for label in ax_imp.get_yticklabels():
+    
+    # 강조 색상 (가장 중요한 피처)
+    bars[0].set_edgecolor("black")
+    bars[0].set_linewidth(1.5)
+    bars[0].set_alpha(0.9)
+    
+    # 배경 색 및 눈금 스타일
+    ax.set_facecolor("#f5f7fa")  # 밝은 회색 배경
+    ax.grid(True, axis="x", linestyle="--", linewidth=0.5, alpha=0.6)
+    
+    # 폰트 및 라벨
+    ax.set_title("랜덤포레스트 피처 중요도", fontproperties=fontprop, fontsize=14, pad=15)
+    ax.set_xlabel("중요도 (0~1)", fontproperties=fontprop, fontsize=12)
+    ax.tick_params(axis='y', labelsize=10)
+    
+    for label in ax.get_yticklabels():
         label.set_fontproperties(fontprop)
-    ax_imp.grid(True, axis="x", linestyle=":", alpha=0.5)
-
+    
+    # 바 값 텍스트 출력
+    for i, bar in enumerate(bars):
+        width = bar.get_width()
+        ax.text(
+            width + 0.01,
+            bar.get_y() + bar.get_height() / 2,
+            f"{width:.3f}",
+            va='center',
+            ha='left',
+            fontsize=9,
+            fontproperties=fontprop
+        )
+    
     st.pyplot(fig_imp)
+
 
 
     with st.expander(" 선형회귀 신뢰도 설명", expanded=True):
