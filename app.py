@@ -7,7 +7,6 @@ import matplotlib.font_manager as fm
 from sklearn.impute import KNNImputer
 from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics.pairwise import euclidean_distances
 from sklearn.preprocessing import RobustScaler
 from sklearn.pipeline import make_pipeline
  
