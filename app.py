@@ -506,22 +506,29 @@ if st.button("예측 시작", use_container_width=True):
 
         st.pyplot(fig)
 
-     # 🎯 피처 중요도 시각화
+    # 🎯 피처 중요도 시각화
     st.subheader("■ 랜덤포레스트 기반 피처 중요도")
+
     importances = model2.feature_importances_
     feature_names = X_all_imputed.columns
     sorted_idx = np.argsort(importances)[::-1]
     top_n = 10
+
     fig_imp, ax_imp = plt.subplots(figsize=(8, 5))
     ax_imp.barh(
         y=np.array(feature_names)[sorted_idx[:top_n]][::-1],
         width=importances[sorted_idx[:top_n]][::-1],
         align="center"
     )
-    ax_imp.set_xlabel("중요도 (0~1)")
+    ax_imp.set_xlabel("중요도 (0~1)", fontproperties=fontprop)
     ax_imp.set_title("랜덤포레스트 피처 중요도", fontproperties=fontprop)
+    ax_imp.tick_params(axis='y', labelsize=10)
+    for label in ax_imp.get_yticklabels():
+        label.set_fontproperties(fontprop)
     ax_imp.grid(True, axis="x", linestyle=":", alpha=0.5)
+
     st.pyplot(fig_imp)
+
 
     with st.expander(" 선형회귀 신뢰도 설명", expanded=True):
         st.markdown(explain1)
